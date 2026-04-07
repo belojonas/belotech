@@ -1,34 +1,29 @@
-import { Resend } from "resend";
+document.addEventListener("DOMContentLoaded", () => {
+  // MOBILE MENU
+  const toggle = document.getElementById("menu-toggle");
+  const nav = document.querySelector(".nav-links");
+  toggle.addEventListener("click", () => {
+    nav.classList.toggle("active");
+  });
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
-export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ message: "Method not allowed" });
-  }
-
-  const { name, email, message } = req.body;
-
-  if (!name || !email || !message) {
-    return res.status(400).json({ message: "All fields are required" });
-  }
-
-  try {
-    await resend.emails.send({
-      from: "onboarding@resend.dev", // change later to your domain
-      to: "belojonas810@gmail.com", // your email
-      subject: "New Contact Form Message",
-      html: `
-        <h2>New Message from Website</h2>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Message:</strong><br>${message}</p>
-      `,
+  // SCROLL REVEAL
+  const reveals = document.querySelectorAll(".reveal");
+  window.addEventListener("scroll", () => {
+    reveals.forEach(el => {
+      const top = el.getBoundingClientRect().top;
+      if(top < window.innerHeight - 100){ el.classList.add("active"); }
     });
+  });
 
-    return res.status(200).json({ message: "Email sent successfully!" });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Failed to send email" });
-  }
-}
+  // FORM SUBMISSION (UI only)
+  const form = document.querySelector(".contact-form");
+  const message = document.getElementById("form-message");
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    message.textContent = "✅ Message sent successfully!";
+    form.reset();
+  });
+
+  // FOOTER YEAR
+  document.getElementById("year").textContent = new Date().getFullYear();
+});
